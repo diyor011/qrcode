@@ -7,6 +7,7 @@ import Content from './Components/Content.jsx';
 import QRCodeUploader from './Components/QRCodeUploader.jsx';
 import ScanScreen from './Components/ScanScreen.jsx';
 import RegisterScreen from './Components/RegisterScreen.jsx';
+import './I18n.js'; // <-- MUHIM! Bu qator kerak
 
 const router = createBrowserRouter([
   {
