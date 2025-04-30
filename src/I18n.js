@@ -16,10 +16,10 @@ i18n
         translation: ruTranslation
       }
     },
-    lng: 'ru', // 👉 Default til: O'zbek tili
-    fallbackLng: 'ru', // 👉 Agar til topilmasa, O'zbek tili ishlatiladi
+    lng: 'ru', 
+    fallbackLng: 'ru', 
     interpolation: {
-      escapeValue: false // React uchun escapeValue kerak emas
+      escapeValue: false 
     }
   });
 

@@ -1,8 +1,28 @@
 {
-    "upload_image": "Rasm yuklash",
-    "scan_qr": "Skaner qilish",
-    "registration": "Registratsiya",
-    "search_open": "Qidiruv oynasi ochildi!",
-    "accessibility_open": "Imkoniyatlar paneli ochildi!"
-  }
-  
+  "upload_image": "Rasm yuklash",
+  "scan_qr": "Skaner qilish",
+  "registration": "Registratsiya",
+  "search_open": "Qidiruv oynasi ochildi!",
+  "accessibility_open": "Imkoniyatlar paneli ochildi!",
+  "services": "Xizmatlar",
+  "upload_title": "Rasm yuklash",
+  "click_to_upload": "Rasm yuklash uchun bosing",
+  "uploading": "Yuklanmoqda...",
+  "upload": "Yuklash",
+  "cancel": "Bekor qilish",
+  "register_title": "Qurilmani ro'yxatdan o'tkazish",
+  "register_subtitle": "Yangi qurilma ro'yxatdan o'tkazilmoqda",
+  "scan_title": "Telefon kamerasi orqali QR ni skaner qiling",
+  "scanned_result": "Skanerlangan natija",
+  "position_qr": "QR kod kameraga to'g'ri kelsa avtomatik skanerlanadi.",
+  "register_title": "Registratsiya uchun QR kodni yuklang",
+  "register_subtitle": "Rasmni tanlang yoki QR kodni joylashtiring",
+  "position_qr": "QR kodni ramkaga to‘g‘ri joylashtiring",
+  "select_image": "Rasm tanlash",
+  "uploading": "Yuborilmoqda...",
+  "upload": "Yuborish",
+  "cancel": "Bekor qilish",
+  "success_register": "QR kod muvaffaqiyatli ro‘yxatdan o‘tkazildi!",
+  "error_register": "Ulanishda xatolik",
+  "transfer_qr": "QR kodni yuklab olish"
+}
