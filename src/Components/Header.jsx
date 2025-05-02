@@ -112,8 +112,6 @@ const Header = ({ setActiveTab }) => {
               {t("services")}
             </button>
             <div className={`absolute top-full mt-2 right-0 w-48 bg-green-900 rounded-md shadow-lg transform origin-top duration-300 z-[9999] ${dropdownOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}>
-              <Link to="/qrcode" onClick={() => { setActiveTab('qrcode'); setDropdownOpen(false); }} className="flex items-center gap-2 px-4 py-3 text-white hover:bg-green-700"><FaUpload /> {t("upload_image")}</Link>
-              <Link to="/scan" onClick={() => { setActiveTab('scan'); setDropdownOpen(false); }} className="flex items-center gap-2 px-4 py-3 text-white hover:bg-green-700"><FaCamera /> {t("scan_qr")}</Link>
               <Link to="/register" onClick={() => { setActiveTab('register'); setDropdownOpen(false); }} className="flex items-center gap-2 px-4 py-3 text-white hover:bg-green-700"><RiLoginBoxFill /> {t("registration")}</Link>
               {isAuthenticated && (
                 <button onClick={() => { localStorage.removeItem('isAuthenticated'); navigate('/login'); }} className="flex items-center gap-2 w-full text-left px-4 py-3 text-white hover:bg-red-600">🚪 {t("logout")}</button>
