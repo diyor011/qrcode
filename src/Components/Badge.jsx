@@ -50,18 +50,12 @@ const Badge = () => {
 
   const handleSubmit = async () => {
     if (!image) return toast.error('Rasm tanlanmagan');
-    if (!formData.first_name || !formData.last_name)
-      return toast.error("Ism va familiya kerak");
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(formData.birthday))
-      return toast.error("Tug‘ilgan sana noto‘g‘ri");
-    if (!/^\+?\d{9,15}$/.test(formData.phone))
-      return toast.error("Telefon raqam noto‘g‘ri");
 
     setLoading(true);
     const form = new FormData();
 
     Object.entries(formData).forEach(([key, val]) => {
-      if (val) form.append(key, val.trim());
+      form.append(key, val);
     });
     form.append('user_image', image);
 
@@ -80,11 +74,11 @@ const Badge = () => {
       const url = URL.createObjectURL(blob);
       setQrCodeUrl(url);
 
-      // Faylni avtomatik yuklab olish
       const a = document.createElement('a');
       a.href = url;
       a.download = 'id_card.pdf';
       a.click();
+
       toast.success("PDF muvaffaqiyatli yaratildi!");
       resetForm();
     } catch (err) {
