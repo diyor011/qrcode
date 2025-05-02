@@ -44,6 +44,7 @@ const Badge = () => {
       passport: '',
       phone: '',
       id_badge: '',
+      
     });
     setImage(null);
     // setQrCodeUrl(qrCodeUrl); // qrnini o‘zgartirmaymiz
@@ -64,7 +65,7 @@ const Badge = () => {
     Object.entries(formData).forEach(([key, val]) => {
       if (val) form.append(key, val.trim());
     });
-    form.append('image', image);
+    form.append('user_image', image);
 
     try {
       const res = await fetch('https://qr.abdugafforov.uz/api/register/', {
