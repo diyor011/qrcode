@@ -15,10 +15,10 @@ const LoginPage = () => {
     e.preventDefault();
 
     // Fixed username/password
-    if (username === '1' && password === '1') {
+    if (username === 'samandar' && password === '1111fazon') {
       const token = 'some-token'; // Tokenni o'zgartirishingiz mumkin
       dispatch(loginSuccess({ user: { username }, token }));
-      navigate('/qrcode');
+      navigate('/register');
     } else {
       setError("Login yoki parol noto‘g‘ri");
     }
