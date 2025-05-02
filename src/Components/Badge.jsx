@@ -38,10 +38,10 @@ const Badge = () => {
     setFormData({
       first_name: '',
       last_name: '',
-      middle_name: '',
+      surname: '',
       country: '',
-      birth_date: '',
-      passport: '',
+      birthday: '',
+      id_pass: '',
       phone: '',
       id_badge: '',
       
