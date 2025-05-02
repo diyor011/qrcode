@@ -1,2 +1,19 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 9999s ease-in-out 0s;
+  -webkit-text-fill-color: #000 !important;
+}
+
+
+@supports not (color: oklch(0% 0 0)) {
+  .your-class {
+    background-color: #f3f4fc;
+    /* Fallback rang */
+  }
+}

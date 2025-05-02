@@ -35,7 +35,7 @@ const ScanScreen = () => {
   };
 
   return (
-    <div className="bg-black rounded-3xl overflow-hidden text-center p-4">
+    <div className="bg-black rounded-3xl overflow-hidden text-center py-4 px-8">
       <div className="flex justify-end p-2">
         <button className="text-gray-400">
           <Camera size={20} />
