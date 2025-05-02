@@ -3,9 +3,11 @@ import { FaUserAlt } from 'react-icons/fa';
 import { BsBuildings } from 'react-icons/bs';
 import { IoCallOutline } from 'react-icons/io5';
 import { toast, ToastContainer } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Badge = () => {
+  const { t } = useTranslation();
   const fileInputRef = useRef();
   const [image, setImage] = useState(null);
   const [qrCodeUrl, setQrCodeUrl] = useState('');
@@ -32,11 +34,29 @@ const Badge = () => {
     if (file) setImage(file);
   };
 
+  const resetForm = () => {
+    setFormData({
+      first_name: '',
+      last_name: '',
+      middle_name: '',
+      country: '',
+      birth_date: '',
+      passport: '',
+      phone: '',
+      id_badge: '',
+    });
+    setImage(null);
+    // setQrCodeUrl(qrCodeUrl); // qrnini o‘zgartirmaymiz
+  };
+
   const handleSubmit = async () => {
-    if (!image) return toast.error('Rasm tanlanmagan');
-    if (!formData.first_name || !formData.last_name) return toast.error("Ism va familiya kerak");
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(formData.birth_date)) return toast.error("Tug‘ilgan sana noto‘g‘ri");
-    if (!/^\+?\d{9,15}$/.test(formData.phone)) return toast.error("Telefon noto‘g‘ri");
+    if (!image) return toast.error(t('error_image_required') || 'Rasm tanlanmagan');
+    if (!formData.first_name || !formData.last_name)
+      return toast.error(t('error_name_required') || "Ism va familiya kerak");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(formData.birth_date))
+      return toast.error(t('error_invalid_birth') || "Tug‘ilgan sana noto‘g‘ri");
+    if (!/^\+?\d{9,15}$/.test(formData.phone))
+      return toast.error(t('error_invalid_phone') || "Telefon noto‘g‘ri");
 
     setLoading(true);
     const form = new FormData();
@@ -55,17 +75,18 @@ const Badge = () => {
       const data = await res.json();
 
       if (res.ok) {
-        toast.success("Ma'lumotlar yuborildi!");
+        toast.success(t('success_sent') || "Ma'lumotlar yuborildi!");
         const qrUrl = data.qr_image?.startsWith('/')
           ? `https://qr.abdugafforov.uz${data.qr_image}`
           : data.qr_image;
         setQrCodeUrl(qrUrl);
+        resetForm(); // faqat inputlar tozalanadi, qr saqlanadi
       } else {
         toast.error("Xatolik: " + (data.detail || ''));
       }
     } catch (err) {
       console.error(err);
-      toast.error("So‘rovda xatolik");
+      toast.error(t('error_request') || "So‘rovda xatolik");
     } finally {
       setLoading(false);
     }
@@ -102,11 +123,11 @@ const Badge = () => {
         </div>
 
         <div className="flex flex-col items-center py-4 gap-2 pl-4">
-          <input name="first_name" value={formData.first_name} onChange={handleChange} type="text" placeholder="Ism"
+          <input name="first_name" value={formData.first_name} onChange={handleChange} type="text" placeholder={t('first_name') || "Ism"}
             className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none border-none" />
-          <input name="last_name" value={formData.last_name} onChange={handleChange} type="text" placeholder="Familiya"
+          <input name="last_name" value={formData.last_name} onChange={handleChange} type="text" placeholder={t('last_name') || "Familiya"}
             className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none border-none" />
-          <input name="middle_name" value={formData.middle_name} onChange={handleChange} type="text" placeholder="Otasini ismi"
+          <input name="middle_name" value={formData.middle_name} onChange={handleChange} type="text" placeholder={t('middle_name') || "Otasini ismi"}
             className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none border-none" />
         </div>
 
@@ -126,14 +147,14 @@ const Badge = () => {
         </div>
 
         <div className="border-amber-700 border rounded-lg mt-4 py-2 px-3">
-          <p className="text-sm text-orange-700 font-semibold text-center mb-2">Aloqa maʼlumotlari</p>
+          <p className="text-sm text-orange-700 font-semibold text-center mb-2">{t('contact_info') || "Aloqa maʼlumotlari"}</p>
           <div className="flex items-center gap-2 justify-end">
-            <input name="phone" value={formData.phone} onChange={handleChange} type="text" placeholder="Telefon raqam"
+            <input name="phone" value={formData.phone} onChange={handleChange} type="text" placeholder={t('phone') || "Telefon raqam"}
               className="w-full text-black border-none outline-none text-right" />
             <IoCallOutline className="text-black" />
           </div>
           <div className="flex items-center gap-2 justify-end mt-2">
-            <input name="country" value={formData.country} onChange={handleChange} type="text" placeholder="Davlat"
+            <input name="country" value={formData.country} onChange={handleChange} type="text" placeholder={t('country') || "Davlat"}
               className="w-full text-black border-none outline-none text-right" />
             <BsBuildings className="text-black" />
           </div>
@@ -152,7 +173,7 @@ const Badge = () => {
           disabled={loading}
           className="btn bg-gradient-to-r from-[#EEAECA] to-[#94BBE9] px-4 py-2 rounded-md font-semibold disabled:opacity-50"
         >
-          {loading ? 'Yuklanmoqda...' : 'Maʼlumotni yuborish'}
+          {loading ? t('loading') || 'Yuklanmoqda...' : t('  send info') || 'Maʼlumotni yuborish'}
         </button>
       </div>
 
