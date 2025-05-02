@@ -10,7 +10,7 @@ import RegisterScreen from './Components/RegisterScreen.jsx';
 import './I18n.js';
 import Badge from './Components/Badge.jsx';
 import LoginPage from './pages/Loginpages.jsx';
-import PrivateRoute from './components/PrivateRoute.jsx';
+import PrivateRoute from './Components/PrivateRoute.jsx';
 import { Provider } from 'react-redux';
 import { store } from './redux/store.js';
 
