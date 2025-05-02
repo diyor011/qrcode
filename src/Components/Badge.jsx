@@ -3,11 +3,10 @@ import { FaUserAlt } from 'react-icons/fa';
 import { BsBuildings } from 'react-icons/bs';
 import { IoCallOutline } from 'react-icons/io5';
 import { toast, ToastContainer } from 'react-toastify';
-import { useTranslation } from 'react-i18next';
+import { QRCodeCanvas } from 'qrcode.react';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Badge = () => {
-  const { t } = useTranslation();
   const fileInputRef = useRef();
   const [image, setImage] = useState(null);
   const [qrCodeUrl, setQrCodeUrl] = useState('');
@@ -16,10 +15,10 @@ const Badge = () => {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
-    middle_name: '',
+    surname: '',
     country: '',
-    birth_date: '',
-    passport: '',
+    birthday: '',
+    id_pass: '',
     phone: '',
     id_badge: '',
   });
@@ -44,20 +43,19 @@ const Badge = () => {
       id_pass: '',
       phone: '',
       id_badge: '',
-      
     });
     setImage(null);
-    // setQrCodeUrl(qrCodeUrl); // qrnini o‘zgartirmaymiz
+    setQrCodeUrl('');
   };
 
   const handleSubmit = async () => {
-    if (!image) return toast.error(t('error_image_required') || 'Rasm tanlanmagan');
+    if (!image) return toast.error('Rasm tanlanmagan');
     if (!formData.first_name || !formData.last_name)
-      return toast.error(t('error_name_required') || "Ism va familiya kerak");
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(formData.birth_date))
-      return toast.error(t('error_invalid_birth') || "Tug‘ilgan sana noto‘g‘ri");
+      return toast.error("Ism va familiya kerak");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(formData.birthday))
+      return toast.error("Tug‘ilgan sana noto‘g‘ri");
     if (!/^\+?\d{9,15}$/.test(formData.phone))
-      return toast.error(t('error_invalid_phone') || "Telefon noto‘g‘ri");
+      return toast.error("Telefon raqam noto‘g‘ri");
 
     setLoading(true);
     const form = new FormData();
@@ -70,24 +68,27 @@ const Badge = () => {
     try {
       const res = await fetch('https://qr.abdugafforov.uz/api/register/', {
         method: 'POST',
-        body: form
+        body: form,
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        toast.success(t('success_sent') || "Ma'lumotlar yuborildi!");
-        const qrUrl = data.qr_image?.startsWith('/')
-          ? `https://qr.abdugafforov.uz${data.qr_image}`
-          : data.qr_image;
-        setQrCodeUrl(qrUrl);
-        resetForm(); // faqat inputlar tozalanadi, qr saqlanadi
-      } else {
-        toast.error("Xatolik: " + (data.detail || ''));
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || 'Xatolik yuz berdi');
       }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      setQrCodeUrl(url);
+
+      // Faylni avtomatik yuklab olish
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'id_card.pdf';
+      a.click();
+      toast.success("PDF muvaffaqiyatli yaratildi!");
+      resetForm();
     } catch (err) {
-      console.error(err);
-      toast.error(t('error_request') || "So‘rovda xatolik");
+      toast.error("Xatolik: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -124,38 +125,38 @@ const Badge = () => {
         </div>
 
         <div className="flex flex-col items-center py-4 gap-2 pl-4">
-          <input name="first_name" value={formData.first_name} onChange={handleChange} type="text" placeholder={t('first_name') || "Ism"}
-            className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none border-none" />
-          <input name="last_name" value={formData.last_name} onChange={handleChange} type="text" placeholder={t('last_name') || "Familiya"}
-            className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none border-none" />
-          <input name="middle_name" value={formData.middle_name} onChange={handleChange} type="text" placeholder={t('middle_name') || "Otasini ismi"}
-            className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none border-none" />
+          <input name="first_name" value={formData.first_name} onChange={handleChange} type="text" placeholder="Ism"
+            className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none" />
+          <input name="last_name" value={formData.last_name} onChange={handleChange} type="text" placeholder="Familiya"
+            className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none" />
+          <input name="surname" value={formData.surname} onChange={handleChange} type="text" placeholder="Otasini ismi"
+            className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none" />
         </div>
 
-        <div className="w-full flex gap-4">
+        <div className="w-full flex gap-4 mt-4">
           <div className="w-1/2 border-amber-700 rounded-lg border flex flex-col items-center py-2">
             <p className="text-amber-700 text-sm">DoB | تاريخ الميلاد</p>
-            <input name="birth_date" value={formData.birth_date} onChange={handleChange}
+            <input name="birthday" value={formData.birthday} onChange={handleChange}
               className="w-4/5 text-black font-semibold border-none outline-none text-center"
               type="text" placeholder="1958-11-25" />
           </div>
           <div className="w-1/2 border-amber-700 rounded-lg border flex flex-col items-center py-2">
             <p className="text-amber-700 text-sm">Passport | رقم الجواز</p>
-            <input name="passport" value={formData.passport} onChange={handleChange}
+            <input name="id_pass" value={formData.id_pass} onChange={handleChange}
               className="w-4/5 text-black font-semibold border-none outline-none text-center"
               type="text" placeholder="AA1234567" />
           </div>
         </div>
 
         <div className="border-amber-700 border rounded-lg mt-4 py-2 px-3">
-          <p className="text-sm text-orange-700 font-semibold text-center mb-2">{t('contact_info') || "Aloqa maʼlumotlari"}</p>
+          <p className="text-sm text-orange-700 font-semibold text-center mb-2">Aloqa maʼlumotlari</p>
           <div className="flex items-center gap-2 justify-end">
-            <input name="phone" value={formData.phone} onChange={handleChange} type="text" placeholder={t('phone') || "Telefon raqam"}
+            <input name="phone" value={formData.phone} onChange={handleChange} type="text" placeholder="Telefon raqam"
               className="w-full text-black border-none outline-none text-right" />
             <IoCallOutline className="text-black" />
           </div>
           <div className="flex items-center gap-2 justify-end mt-2">
-            <input name="country" value={formData.country} onChange={handleChange} type="text" placeholder={t('country') || "Davlat"}
+            <input name="country" value={formData.country} onChange={handleChange} type="text" placeholder="Davlat"
               className="w-full text-black border-none outline-none text-right" />
             <BsBuildings className="text-black" />
           </div>
@@ -163,9 +164,17 @@ const Badge = () => {
 
         <div className="flex justify-center items-center mt-4">
           <input name="id_badge" value={formData.id_badge} onChange={handleChange} type="text" placeholder="18030-03-0980"
-            className="text-black border border-gray-300 px-2 py-1 rounded outline-none border-none" />
-          {qrCodeUrl && <img src={qrCodeUrl + '?t=' + Date.now()} className="w-24 h-24 ml-4" alt="QR Code" />}
+            className="text-black border border-gray-300 px-2 py-1 rounded outline-none" />
         </div>
+
+        {qrCodeUrl && (
+          <div className="flex flex-col items-center mt-6 gap-2">
+            <a href={qrCodeUrl} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">
+              PDF faylni ko‘rish
+            </a>
+            <QRCodeCanvas value={qrCodeUrl} size={128} />
+          </div>
+        )}
       </div>
 
       <div className="mt-4 flex justify-center">
@@ -174,7 +183,7 @@ const Badge = () => {
           disabled={loading}
           className="btn bg-gradient-to-r from-[#EEAECA] to-[#94BBE9] px-4 py-2 rounded-md font-semibold disabled:opacity-50"
         >
-          {loading ? t('loading') || 'Yuklanmoqda...' : t('  send info') || 'Maʼlumotni yuborish'}
+          {loading ? 'Yuklanmoqda...' : 'Maʼlumotni yuborish'}
         </button>
       </div>
 
