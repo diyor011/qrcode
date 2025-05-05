@@ -60,7 +60,7 @@ const Badge = () => {
     form.append('user_image', image);
 
     try {
-      const res = await fetch('https://qr.abdugafforov.uz/api/register/', {
+      const res = await fetch('https://hajgov.com/api/register/', {
         method: 'POST',
         body: form,
       });
@@ -74,13 +74,7 @@ const Badge = () => {
       const url = URL.createObjectURL(blob);
       setQrCodeUrl(url);
 
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'id_card.pdf';
-      a.click();
-
-      toast.success("PDF muvaffaqiyatli yaratildi!");
-      resetForm();
+      toast.success("PDF tayyor, endi yuklab olishingiz mumkin!");
     } catch (err) {
       toast.error("Xatolik: " + err.message);
     } finally {
@@ -159,16 +153,15 @@ const Badge = () => {
         <div className="flex justify-center items-center mt-4">
           <input name="id_badge" value={formData.id_badge} onChange={handleChange} type="text" placeholder="18030-03-0980"
             className="text-black border border-gray-300 px-2 py-1 rounded outline-none" />
+          {qrCodeUrl && (
+            <div className="flex flex-col items-center mt-6 gap-3">
+              <QRCodeCanvas value={qrCodeUrl} size={128} />
+
+            </div>
+          )}
         </div>
 
-        {qrCodeUrl && (
-          <div className="flex flex-col items-center mt-6 gap-2">
-            <a href={qrCodeUrl} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">
-              PDF faylni ko‘rish
-            </a>
-            <QRCodeCanvas value={qrCodeUrl} size={128} />
-          </div>
-        )}
+
       </div>
 
       <div className="mt-4 flex justify-center">
@@ -179,6 +172,13 @@ const Badge = () => {
         >
           {loading ? 'Yuklanmoqda...' : 'Maʼlumotni yuborish'}
         </button>
+        <a
+          href={qrCodeUrl}
+          download="id_card.pdf"
+          className="btn bg-gradient-to-r from-[#EEAECA] to-[#94BBE9] px-4 py-2 rounded-md font-semibold disabled:opacity-50"
+        >
+          PDF ni yuklab olish
+        </a>
       </div>
 
       <ToastContainer position="top-center" />
