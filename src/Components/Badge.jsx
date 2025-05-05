@@ -60,7 +60,7 @@ const Badge = () => {
     form.append('user_image', image);
 
     try {
-      const res = await fetch('https://hajgov.com/api/register/', {
+      const res = await fetch('https://qr.abdugafforov.uz/api/register/', {
         method: 'POST',
         body: form,
       });
