@@ -31,28 +31,35 @@ const Badge = () => {
     const file = e.target.files[0];
     if (file) setImage(file);
   };
-
   const handleSubmit = async () => {
     if (!image) return toast.error('Rasm tanlanmagan');
-
+  
+    // 👉 Maydonlar to‘ldirilganligini tekshirish
+    const requiredFields = ['first_name', 'last_name', 'surname', 'country', 'birthday', 'id_pass', 'phone', 'id_badge'];
+    for (let field of requiredFields) {
+      if (!formData[field]) {
+        return toast.error(`${field.replace('_', ' ').toUpperCase()} maydoni to‘ldirilmagan!`);
+      }
+    }
+  
     setLoading(true);
     const form = new FormData();
     Object.entries(formData).forEach(([key, val]) => form.append(key, val));
     form.append('user_image', image);
-
+  
     try {
       const res = await fetch('https://hajgov.com/api/qr-register/', {
         method: 'POST',
         body: form,
       });
-
+  
       if (!res.ok) throw new Error(await res.text());
-
+  
       const data = await res.json();
       const qrImgPath = data.id_card.qr_image;
       const qrFullUrl = `https://hajgov.com${qrImgPath}`;
       setQrCodeUrl(qrFullUrl);
-
+  
       toast.success("QR tayyor bo'ldi!");
     } catch (err) {
       toast.error("Xatolik: " + err.message);
@@ -155,9 +162,7 @@ const Badge = () => {
                 QR-ni yuklab olish
               </a>
 
-              <p className="text-gray-500 text-xs text-center mt-1">
-                Skan qilinsa backenddagi rasm ochiladi
-              </p>
+          
             </div>
           )}
         </div>
