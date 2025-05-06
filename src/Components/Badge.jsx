@@ -3,7 +3,6 @@ import { FaUserAlt } from 'react-icons/fa';
 import { BsBuildings } from 'react-icons/bs';
 import { IoCallOutline } from 'react-icons/io5';
 import { toast, ToastContainer } from 'react-toastify';
-import { QRCodeCanvas } from 'qrcode.react';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Badge = () => {
@@ -38,9 +37,7 @@ const Badge = () => {
 
     setLoading(true);
     const form = new FormData();
-    Object.entries(formData).forEach(([key, val]) => {
-      form.append(key, val);
-    });
+    Object.entries(formData).forEach(([key, val]) => form.append(key, val));
     form.append('user_image', image);
 
     try {
@@ -49,33 +46,19 @@ const Badge = () => {
         body: form,
       });
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || 'Xatolik yuz berdi');
-      }
+      if (!res.ok) throw new Error(await res.text());
 
       const data = await res.json();
       const qrImgPath = data.id_card.qr_image;
       const qrFullUrl = `https://hajgov.com${qrImgPath}`;
       setQrCodeUrl(qrFullUrl);
 
-      toast.success("QR Code tayyor!");
+      toast.success("QR tayyor bo'ldi!");
     } catch (err) {
       toast.error("Xatolik: " + err.message);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDownloadQR = () => {
-    const canvas = document.querySelector('canvas');
-    const pngUrl = canvas.toDataURL('image/png');
-    const downloadLink = document.createElement('a');
-    downloadLink.href = pngUrl;
-    downloadLink.download = 'qr-code.png';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
   };
 
   return (
@@ -157,14 +140,24 @@ const Badge = () => {
           {qrCodeUrl && (
             <div className="flex flex-col items-center gap-2">
               <div className="bg-white p-2 rounded shadow-md">
-                <QRCodeCanvas value={qrCodeUrl} size={100} />
+                <img
+                  src={qrCodeUrl}
+                  alt="QR code"
+                  className="w-[100px] h-[100px] object-contain"
+                />
               </div>
-              <button
-                onClick={handleDownloadQR}
-                className="bg-amber-600 text-white px-3 py-1 rounded hover:bg-amber-700 text-sm"
+
+              <a
+                href={qrCodeUrl}
+                download="qr-code.png"
+                className="bg-amber-600 text-white px-3 py-1 rounded hover:bg-amber-700 text-sm text-center mt-2"
               >
                 QR-ni yuklab olish
-              </button>
+              </a>
+
+              <p className="text-gray-500 text-xs text-center mt-1">
+                Skan qilinsa backenddagi rasm ochiladi
+              </p>
             </div>
           )}
         </div>
