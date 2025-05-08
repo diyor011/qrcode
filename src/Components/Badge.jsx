@@ -48,7 +48,7 @@ const Badge = () => {
     form.append('user_image', image);
   
     try {
-      const res = await fetch('https://hajgov.com/api/qr-register/', {
+      const res = await fetch('https://platinumhost.uz/api/qr-register/', {
         method: 'POST',
         body: form,
       });
@@ -57,7 +57,7 @@ const Badge = () => {
   
       const data = await res.json();
       const qrImgPath = data.id_card.qr_image;
-      const qrFullUrl = `https://hajgov.com${qrImgPath}`;
+      const qrFullUrl = `https://platinumhost.uz${qrImgPath}`;
       setQrCodeUrl(qrFullUrl);
   
       toast.success("QR tayyor bo'ldi!");
