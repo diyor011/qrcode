@@ -23,22 +23,8 @@ const router = createBrowserRouter([
         path: '',
         element: <Content />,
         children: [
-          {
-            path: 'qrcode',
-            element: (
-              <PrivateRoute>
-                <QRCodeUploader />
-              </PrivateRoute>
-            ),
-          },
-          {
-            path: 'scan',
-            element: (
-              <PrivateRoute>
-                <ScanScreen />
-              </PrivateRoute>
-            ),
-          },
+         
+          
           {
             path: 'register',
             element: (

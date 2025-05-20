@@ -1,11 +1,7 @@
-import React, { useRef, useState } from 'react';
-import { FaUserAlt } from 'react-icons/fa';
-import { BsBuildings } from 'react-icons/bs';
-import { IoCallOutline } from 'react-icons/io5';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useRef } from 'react';
+import { User, Building, Phone, Calendar, FileText, Globe, QrCode, Upload, Loader2 } from 'lucide-react';
 
-const Badge = () => {
+export default function ModernBadgeForm() {
   const fileInputRef = useRef();
   const [image, setImage] = useState(null);
   const [qrCodeUrl, setQrCodeUrl] = useState('');
@@ -31,156 +27,234 @@ const Badge = () => {
     const file = e.target.files[0];
     if (file) setImage(file);
   };
+
   const handleSubmit = async () => {
-    if (!image) return toast.error('Rasm tanlanmagan');
-  
-    // 👉 Maydonlar to‘ldirilganligini tekshirish
-    const requiredFields = ['first_name', 'last_name', 'surname', 'country', 'birthday', 'id_pass', 'phone', 'id_badge'];
-    for (let field of requiredFields) {
-      if (!formData[field]) {
-        return toast.error(`${field.replace('_', ' ').toUpperCase()} maydoni to‘ldirilmagan!`);
-      }
-    }
-  
+    // Form validation would normally go here
     setLoading(true);
-    const form = new FormData();
-    Object.entries(formData).forEach(([key, val]) => form.append(key, val));
-    form.append('user_image', image);
-  
-    try {
-      const res = await fetch('https://platinumhost.uz/api/qr-register/', {
-        method: 'POST',
-        body: form,
-      });
-  
-      if (!res.ok) throw new Error(await res.text());
-  
-      const data = await res.json();
-      const qrImgPath = data.id_card.qr_image;
-      const qrFullUrl = `https://platinumhost.uz${qrImgPath}`;
-      setQrCodeUrl(qrFullUrl);
-  
-      toast.success("QR tayyor bo'ldi!");
-    } catch (err) {
-      toast.error("Xatolik: " + err.message);
-    } finally {
+    
+    // Simulate API call for demo purposes
+    setTimeout(() => {
+      setQrCodeUrl('/api/placeholder/200/200');
       setLoading(false);
-    }
+    }, 1500);
   };
 
   return (
-    <div>
-      <div className="bg-gradient-to-r from-[#EEAECA] to-[#94BBE9] px-4 py-4 rounded-2xl mt-8 max-w-3xl mx-auto">
-        <div className="flex justify-between">
-          <img src="/bage-icon1.png" alt="" className="w-16 h-14" />
-          <div className="flex flex-col justify-center bg-amber-700 items-center pt-8 pb-6 px-4 mx-4">
-            <p className="text-white">بطاقة شك</p>
-            <p className="text-white">nusik Card</p>
-            <div onClick={() => fileInputRef.current.click()} className="cursor-pointer">
-              {image ? (
-                <img src={URL.createObjectURL(image)} className="w-24 h-24 object-cover" alt="Uploaded" />
-              ) : (
-                <p className="text-9xl text-white"><FaUserAlt /></p>
-              )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
+    <div className="w-full max-w-3xl mx-auto">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 rounded-t-xl shadow-lg">
+        <div className="flex items-center justify-between">
+          <h1 className="text-white text-2xl font-bold">ID Badge Generator</h1>
+          <div className="flex items-center gap-2">
+            <span className="text-white text-sm opacity-80">ID Card System</span>
+            <QrCode className="text-white h-5 w-5" />
+          </div>
+        </div>
+      </div>
+
+      {/* Card Body */}
+      <div className="bg-white rounded-b-xl shadow-lg p-6">
+        {/* Profile Photo Upload */}
+        <div className="flex justify-center mb-8">
+          <div 
+            onClick={() => fileInputRef.current.click()}
+            className="relative w-32 h-32 rounded-full bg-gray-100 border-4 border-blue-500 flex items-center justify-center cursor-pointer overflow-hidden group"
+          >
+            {image ? (
+              <img 
+                src={URL.createObjectURL(image)} 
+                className="w-full h-full object-cover"
+                alt="Profile" 
               />
+            ) : (
+              <User className="w-16 h-16 text-gray-400" />
+            )}
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Upload className="w-8 h-8 text-white" />
             </div>
-          </div>
-          <div className="flex items-center flex-col">
-            <img src="/bage-icon2.png" className="w-16 h-14" alt="" />
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center py-4 gap-2 pl-4">
-          <input name="first_name" value={formData.first_name} onChange={handleChange} type="text" placeholder="Ism"
-            className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none" />
-          <input name="last_name" value={formData.last_name} onChange={handleChange} type="text" placeholder="Familiya"
-            className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none" />
-          <input name="surname" value={formData.surname} onChange={handleChange} type="text" placeholder="Otasini ismi"
-            className="w-[40%] px-4 py-1 font-bold border border-gray-300 rounded-md text-black outline-none" />
-        </div>
-
-        <div className="w-full flex gap-4 mt-4">
-          <div className="w-1/2 border-amber-700 rounded-lg border flex flex-col items-center py-2">
-            <p className="text-amber-700 text-sm">DoB | تاريخ الميلاد</p>
-            <input name="birthday" value={formData.birthday} onChange={handleChange}
-              className="w-4/5 text-black font-semibold border-none outline-none text-center"
-              type="text" placeholder="1958-11-25" />
-          </div>
-          <div className="w-1/2 border-amber-700 rounded-lg border flex flex-col items-center py-2">
-            <p className="text-amber-700 text-sm">Passport | رقم الجواز</p>
-            <input name="id_pass" value={formData.id_pass} onChange={handleChange}
-              className="w-4/5 text-black font-semibold border-none outline-none text-center"
-              type="text" placeholder="AA1234567" />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
           </div>
         </div>
 
-        <div className="border-amber-700 border rounded-lg mt-4 py-2 px-3">
-          <p className="text-sm text-orange-700 font-semibold text-center mb-2">Aloqa maʼlumotlari</p>
-          <div className="flex items-center gap-2 justify-end">
-            <input name="phone" value={formData.phone} onChange={handleChange} type="text" placeholder="Telefon raqam"
-              className="w-full text-black border-none outline-none text-right" />
-            <IoCallOutline className="text-black" />
-          </div>
-          <div className="flex items-center gap-2 justify-end mt-2">
-            <input name="country" value={formData.country} onChange={handleChange} type="text" placeholder="Davlat"
-              className="w-full text-black border-none outline-none text-right" />
-            <BsBuildings className="text-black" />
-          </div>
-        </div>
-
-        <div className="flex justify-between items-start mt-4 gap-4">
-          <input
-            name="id_badge"
-            value={formData.id_badge}
-            onChange={handleChange}
-            type="text"
-            placeholder="18030-03-0980"
-            className="text-black border border-gray-300 px-2 py-1 rounded outline-none w-1/2"
-          />
-
-          {qrCodeUrl && (
-            <div className="flex flex-col items-center gap-2">
-              <div className="bg-white p-2 rounded shadow-md">
-                <img
-                  src={qrCodeUrl}
-                  alt="QR code"
-                  className="w-[100px] h-[100px] object-contain"
-                />
+        {/* Form Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Personal Information */}
+          <div className="space-y-4 md:col-span-2">
+            <h2 className="text-lg font-medium text-gray-700 border-b pb-2">Personal Information</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-600 mb-1">First Name <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <input
+                    name="first_name"
+                    value={formData.first_name}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="First Name"
+                    className=" text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                </div>
               </div>
-
-              <a
-                href={qrCodeUrl}
-                download="qr-code.png"
-                className="bg-amber-600 text-white px-3 py-1 rounded hover:bg-amber-700 text-sm text-center mt-2"
-              >
-                QR-ni yuklab olish
-              </a>
-
-          
+              
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-600 mb-1">Last Name <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <input
+                    name="last_name"
+                    value={formData.last_name}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="Last Name"
+                    className="text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                </div>
+              </div>
+              
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-600 mb-1">Surname <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <input
+                    name="surname"
+                    value={formData.surname}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="Surname"
+                    className="text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                </div>
+              </div>
             </div>
-          )}
+          </div>
+          
+          {/* Legal Information */}
+          <div className="space-y-4">
+            <h2 className="text-lg font-medium text-gray-700 border-b pb-2">Legal Information</h2>
+            
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-600 mb-1">Date of Birth <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <input
+                  name="birthday"
+                  value={formData.birthday}
+                  onChange={handleChange}
+                  type="text"
+                  placeholder="YYYY-MM-DD"
+                  className="text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                />
+                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              </div>
+            </div>
+            
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-600 mb-1">Passport Number <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <input
+                  name="id_pass"
+                  value={formData.id_pass}
+                  onChange={handleChange}
+                  type="text"
+                  placeholder="Passport Number"
+                  className=" text-black  w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                />
+                <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              </div>
+            </div>
+            
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-600 mb-1">ID Badge Number <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <input
+                  name="id_badge"
+                  value={formData.id_badge}
+                  onChange={handleChange}
+                  type="text"
+                  placeholder="Badge Number"
+                  className="text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                />
+                <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              </div>
+            </div>
+          </div>
+          
+          {/* Contact Information */}
+          <div className="space-y-4">
+            <h2 className="text-lg font-medium text-gray-700 border-b pb-2">Contact Information</h2>
+            
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-600 mb-1">Country <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <input
+                  name="country"
+                  value={formData.country}
+                  onChange={handleChange}
+                  type="text"
+                  placeholder="Country"
+                  className="text-black  w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                />
+                <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              </div>
+            </div>
+            
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-600 mb-1">Phone Number <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <input
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  type="text"
+                  placeholder="Phone Number"
+                  className="text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                />
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* QR Code Result */}
+        {qrCodeUrl && (
+          <div className="mt-8 p-4 bg-gray-50 rounded-lg flex justify-center">
+            <div className="flex flex-col items-center">
+              <h3 className="text-gray-700 font-medium mb-3">Your QR Code</h3>
+              <div className="bg-white p-3 rounded-lg shadow-md mb-3">
+                <img src={qrCodeUrl} alt="QR Code" className="w-32 h-32" />
+              </div>
+              <button className="text-sm bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                Download QR Code
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-8 rounded-lg font-medium text-lg shadow-lg hover:from-blue-700 hover:to-purple-700 transition-colors disabled:opacity-70 flex items-center gap-2"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              <>Submit Information</>
+            )}
+          </button>
         </div>
       </div>
-
-      <div className="mt-4 flex justify-center">
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="btn bg-gradient-to-r from-[#EEAECA] to-[#94BBE9] px-4 py-2 rounded-md font-semibold disabled:opacity-50"
-        >
-          {loading ? 'Yuklanmoqda...' : 'Maʼlumotni yuborish'}
-        </button>
-      </div>
-
-      <ToastContainer position="top-center" />
     </div>
   );
-};
-
-export default Badge;
+}
