@@ -28,6 +28,13 @@ export default function ModernBadgeForm() {
     if (file) setImage(file);
   };
 
+  const getCookie = (name) => {
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith(name + '='));
+    return cookieValue ? decodeURIComponent(cookieValue.split('=')[1]) : null;
+  };
+  
   const handleSubmit = async () => {
     setLoading(true);
   
@@ -41,19 +48,19 @@ export default function ModernBadgeForm() {
     form.append('phone', formData.phone);
     form.append('id_badge', formData.id_badge);
   
-    // Agar user rasm yuklasa
     if (formData.user_image) {
       form.append('user_image', formData.user_image);
     }
   
     try {
+      const csrfToken = getCookie('csrftoken'); // Django default cookie nomi
+  
       const response = await fetch('https://hajgov.com/api/qr-register/', {
         method: 'POST',
         body: form,
+        credentials: 'include', // Cookie'ni yuborish uchun muhim
         headers: {
-          // ❌ Content-Type yozmang! Browser o‘zi `multipart/form-data` ni generatsiya qiladi
-          // ❌ CSRF token ham hozircha kerak emas (agar `SameSite=None` bo‘lsa)
-          // 'X-CSRFTOKEN': 'token'  <-- agar kerak bo‘lsa, keyin qo‘shiladi
+          'X-CSRFToken': csrfToken, // Muhim: CSRF tokenni yuborish
         }
       });
   
