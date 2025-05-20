@@ -48,8 +48,8 @@ export default function ModernBadgeForm() {
     form.append('phone', formData.phone);
     form.append('id_badge', formData.id_badge);
   
-    if (formData.user_image) {
-      form.append('user_image', formData.user_image);
+    if (image) {
+      form.append('user_image', image);
     }
   
     try {
