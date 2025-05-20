@@ -268,20 +268,24 @@ export default function ModernBadgeForm() {
           </div>
         </div>
 
-        {/* QR Code Result */}
         {qrCodeUrl && (
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg flex justify-center">
-            <div className="flex flex-col items-center">
-              <h3 className="text-gray-700 font-medium mb-3">Your QR Code</h3>
-              <div className="bg-white p-3 rounded-lg shadow-md mb-3">
-                <img src={qrCodeUrl} alt="QR Code" className="w-32 h-32" />
-              </div>
-              <button className="text-sm bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-                Download QR Code
-              </button>
+        <div className="mt-8 p-4 bg-gray-50 rounded-lg flex justify-center">
+          <div className="flex flex-col items-center">
+            <h3 className="text-gray-700 font-medium mb-3">Your QR Code</h3>
+            <div className="bg-white p-3 rounded-lg shadow-md mb-3">
+              <img src={qrCodeUrl} alt="QR Code" className="w-32 h-32" />
             </div>
+            <a 
+              href={qrCodeUrl} 
+              download="qr_code.png" 
+              className="text-sm bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-center"
+            >
+              Download QR Code
+            </a>
           </div>
-        )}
+        </div>
+      )}
+
 
         {/* Submit Button */}
         <div className="mt-8 flex justify-center">
