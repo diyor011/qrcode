@@ -53,33 +53,35 @@ export default function ModernBadgeForm() {
     }
   
     try {
-      const csrfToken = getCookie('csrftoken'); // Django default cookie nomi
+      const csrfToken = getCookie('csrftoken');
   
       const response = await fetch('https://hajgov.com/api/qr-register/', {
         method: 'POST',
         body: form,
-        credentials: 'include', // Cookie'ni yuborish uchun muhim
+        credentials: 'include',
         headers: {
-          'X-CSRFToken': csrfToken, // Muhim: CSRF tokenni yuborish
-        }
+          'X-CSRFToken': csrfToken,
+        },
       });
   
       if (!response.ok) throw new Error(`Xatolik: ${response.status}`);
   
       const data = await response.json();
-      if (data.qr_url) {
-        setQrCodeUrl(data.qr_url);
+      if (data.id_card && data.id_card.qr_image) {
+        // Bu yerda to‘liq URL yasash kerak, agar qr_image faqat path bo‘lsa
+        const baseUrl = 'https://hajgov.com'; // o‘z domeningni qo‘y
+        setQrCodeUrl(baseUrl + data.id_card.qr_image);
       } else {
-        console.warn('QR URL yo‘q:', data);
+        console.warn('QR rasm URL yo‘q:', data);
       }
-  
     } catch (err) {
       console.error('Xatolik:', err);
-      alert("QR olishda muammo bo‘ldi.");
+      alert('QR olishda muammo bo‘ldi.');
     } finally {
       setLoading(false);
     }
   };
+  
   
 
 
