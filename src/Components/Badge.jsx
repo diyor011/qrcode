@@ -28,16 +28,38 @@ export default function ModernBadgeForm() {
     if (file) setImage(file);
   };
 
-  const handleSubmit = async () => {
-    // Form validation would normally go here
-    setLoading(true);
-    
-    // Simulate API call for demo purposes
-    setTimeout(() => {
-      setQrCodeUrl('/api/qr-register');
-      setLoading(false);
-    }, 1500);
-  };
+const handleSubmit = async () => {
+  setLoading(true);
+
+  try {
+    const response = await fetch('https://hajgov.com/api/qr-register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server xatolik qaytardi: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.qr_url) {
+      setQrCodeUrl(data.qr_url);
+    } else {
+      console.warn('QR URL topilmadi:', data);
+    }
+
+  } catch (error) {
+    console.error('Xatolik:', error);
+    alert('QR kod olishda muammo bo‘ldi. Iltimos, keyinroq urinib ko‘ring.');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="w-full max-w-3xl mx-auto">
