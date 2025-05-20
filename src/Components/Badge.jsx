@@ -34,7 +34,7 @@ export default function ModernBadgeForm() {
     
     // Simulate API call for demo purposes
     setTimeout(() => {
-      setQrCodeUrl('/api/register');
+      setQrCodeUrl('/api/qr-detail');
       setLoading(false);
     }, 1500);
   };
