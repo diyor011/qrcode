@@ -13,7 +13,7 @@ export default function ModernBadgeForm() {
     country: '',
     birthday: '',
     id_pass: '',
-    phone: '',
+    blood_type: '',
     id_badge: '',
   });
 
@@ -33,26 +33,26 @@ export default function ModernBadgeForm() {
       .find(row => row.startsWith(name + '='));
     return cookieValue ? decodeURIComponent(cookieValue.split('=')[1]) : null;
   };
-  
+
   const handleSubmit = async () => {
     setLoading(true);
-  
+
     const form = new FormData();
     form.append('first_name', formData.first_name);
     form.append('gender', formData.gender);
     form.append('birthday', formData.birthday);
     form.append('id_pass', formData.id_pass);
     form.append('country', formData.country);
-    form.append('phone', formData.phone);
+    form.append('blood_type', formData.blood_type);
     form.append('id_badge', formData.id_badge);
-  
+
     if (image) {
       form.append('user_image', image);
     }
-  
+
     try {
       const csrfToken = getCookie('csrftoken');
-  
+
       const response = await fetch('https://hajgov.com/api/qr-register/', {
         method: 'POST',
         body: form,
@@ -61,9 +61,9 @@ export default function ModernBadgeForm() {
           'X-CSRFToken': csrfToken,
         },
       });
-  
+
       if (!response.ok) throw new Error(`Xatolik: ${response.status}`);
-  
+
       const data = await response.json();
       if (data.id_card && data.id_card.qr_image) {
         // Bu yerda to'liq URL yasash kerak, agar qr_image faqat path bo'lsa
@@ -79,8 +79,8 @@ export default function ModernBadgeForm() {
       setLoading(false);
     }
   };
-  
-  
+
+
 
 
   return (
@@ -100,15 +100,15 @@ export default function ModernBadgeForm() {
       <div className="bg-white rounded-b-xl shadow-lg p-6">
         {/* Profile Photo Upload */}
         <div className="flex justify-center mb-8">
-          <div 
+          <div
             onClick={() => fileInputRef.current.click()}
             className="relative w-32 h-32 rounded-full bg-gray-100 border-4 border-blue-500 flex items-center justify-center cursor-pointer overflow-hidden group"
           >
             {image ? (
-              <img 
-                src={URL.createObjectURL(image)} 
+              <img
+                src={URL.createObjectURL(image)}
                 className="w-full h-full object-cover"
-                alt="Profile" 
+                alt="Profile"
               />
             ) : (
               <User className="w-16 h-16 text-gray-400" />
@@ -131,7 +131,7 @@ export default function ModernBadgeForm() {
           {/* Personal Information */}
           <div className="space-y-4 md:col-span-2">
             <h2 className="text-lg font-medium text-gray-700 border-b pb-2">Personal Information</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-600 mb-1">Full Name <span className="text-red-500">*</span></label>
@@ -147,7 +147,7 @@ export default function ModernBadgeForm() {
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 </div>
               </div>
-              
+
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-600 mb-1">Gender <span className="text-red-500">*</span></label>
                 <div className="relative">
@@ -171,11 +171,11 @@ export default function ModernBadgeForm() {
               </div>
             </div>
           </div>
-          
+
           {/* Legal Information */}
           <div className="space-y-4">
             <h2 className="text-lg font-medium text-gray-700 border-b pb-2">Legal Information</h2>
-            
+
             <div className="relative">
               <label className="block text-sm font-medium text-gray-600 mb-1">Date of Birth <span className="text-red-500">*</span></label>
               <div className="relative">
@@ -190,7 +190,7 @@ export default function ModernBadgeForm() {
                 <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               </div>
             </div>
-            
+
             <div className="relative">
               <label className="block text-sm font-medium text-gray-600 mb-1">Passport Number <span className="text-red-500">*</span></label>
               <div className="relative">
@@ -205,7 +205,7 @@ export default function ModernBadgeForm() {
                 <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               </div>
             </div>
-            
+
             <div className="relative">
               <label className="block text-sm font-medium text-gray-600 mb-1">ID Badge Number <span className="text-red-500">*</span></label>
               <div className="relative">
@@ -221,11 +221,11 @@ export default function ModernBadgeForm() {
               </div>
             </div>
           </div>
-          
+
           {/* Contact Information */}
           <div className="space-y-4">
             <h2 className="text-lg font-medium text-gray-700 border-b pb-2">Contact Information</h2>
-            
+
             <div className="relative">
               <label className="block text-sm font-medium text-gray-600 mb-1">Country <span className="text-red-500">*</span></label>
               <div className="relative">
@@ -240,19 +240,32 @@ export default function ModernBadgeForm() {
                 <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               </div>
             </div>
-            
+
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-600 mb-1">Phone Number <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Blood Type <span className="text-red-500">*</span></label>
               <div className="relative">
-                <input
-                  name="phone"
-                  value={formData.phone}
+                <select
+                  name="blood_type"
+                  value={formData.blood_type}
                   onChange={handleChange}
-                  type="text"
-                  placeholder="Phone Number"
-                  className="text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                />
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  className="text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-white"
+                >
+                  <option value="">Select Blood Type</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+                <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
