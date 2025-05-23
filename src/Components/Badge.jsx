@@ -9,8 +9,7 @@ export default function ModernBadgeForm() {
 
   const [formData, setFormData] = useState({
     first_name: '',
-    last_name: '',
-    surname: '',
+    gender: '',
     country: '',
     birthday: '',
     id_pass: '',
@@ -40,8 +39,7 @@ export default function ModernBadgeForm() {
   
     const form = new FormData();
     form.append('first_name', formData.first_name);
-    form.append('last_name', formData.last_name);
-    form.append('surname', formData.surname);
+    form.append('gender', formData.gender);
     form.append('birthday', formData.birthday);
     form.append('id_pass', formData.id_pass);
     form.append('country', formData.country);
@@ -68,15 +66,15 @@ export default function ModernBadgeForm() {
   
       const data = await response.json();
       if (data.id_card && data.id_card.qr_image) {
-        // Bu yerda to‘liq URL yasash kerak, agar qr_image faqat path bo‘lsa
-        const baseUrl = 'https://hajgov.com'; // o‘z domeningni qo‘y
+        // Bu yerda to'liq URL yasash kerak, agar qr_image faqat path bo'lsa
+        const baseUrl = 'https://hajgov.com'; // o'z domeningni qo'y
         setQrCodeUrl(baseUrl + data.id_card.qr_image);
       } else {
-        console.warn('QR rasm URL yo‘q:', data);
+        console.warn('QR rasm URL yo`q:', data);
       }
     } catch (err) {
       console.error('Xatolik:', err);
-      alert('QR olishda muammo bo‘ldi.');
+      alert('QR olishda muammo bo`ldi.');
     } finally {
       setLoading(false);
     }
@@ -134,16 +132,16 @@ export default function ModernBadgeForm() {
           <div className="space-y-4 md:col-span-2">
             <h2 className="text-lg font-medium text-gray-700 border-b pb-2">Personal Information</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="relative">
-                <label className="block text-sm font-medium text-gray-600 mb-1">First Name <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Full Name <span className="text-red-500">*</span></label>
                 <div className="relative">
                   <input
                     name="first_name"
                     value={formData.first_name}
                     onChange={handleChange}
                     type="text"
-                    placeholder="First Name"
+                    placeholder="Full Name"
                     className=" text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   />
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -151,32 +149,24 @@ export default function ModernBadgeForm() {
               </div>
               
               <div className="relative">
-                <label className="block text-sm font-medium text-gray-600 mb-1">Last Name <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Gender <span className="text-red-500">*</span></label>
                 <div className="relative">
-                  <input
-                    name="last_name"
-                    value={formData.last_name}
+                  <select
+                    name="gender"
+                    value={formData.gender}
                     onChange={handleChange}
-                    type="text"
-                    placeholder="Last Name"
-                    className="text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  />
+                    className="text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-white"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                </div>
-              </div>
-              
-              <div className="relative">
-                <label className="block text-sm font-medium text-gray-600 mb-1">Surname <span className="text-red-500">*</span></label>
-                <div className="relative">
-                  <input
-                    name="surname"
-                    value={formData.surname}
-                    onChange={handleChange}
-                    type="text"
-                    placeholder="Surname"
-                    className="text-black w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  />
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
